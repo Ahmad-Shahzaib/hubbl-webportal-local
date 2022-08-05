@@ -97,6 +97,7 @@ import {
   AllAnalytics,
   AllFeedbacks,
   AllHotDrops,
+  AddHotDrops,
   AllProjects,
 } from "../pageListAsync";
 
@@ -118,6 +119,7 @@ function Application(props) {
         <Route path="/app/analytics" component={AllAnalytics} />
         <Route path="/app/feedbacks" component={AllFeedbacks} />
         <Route path="/app/hot-drops" component={AllHotDrops} />
+        <Route path="/app/add-hot-drops" component={AddHotDrops} />
         <Route path="/app/nft-official-projects" component={AllProjects} />
 
         <Route path="/app/calendar" component={Calendar} />

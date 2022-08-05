@@ -141,6 +141,13 @@ function AddStaff(props) {
     }));
   };
 
+  const resetupload = (name) => (value) => {
+    setData((previous) => ({
+      ...previous,
+      [name]: value[0],
+    }));
+  };
+
   useEffect(() => {
     if (getCookie("id")) {
     } else {
@@ -186,6 +193,7 @@ function AddStaff(props) {
           toast.warn(res.data.message);
         } else {
           setData(defaultDataConfig);
+          resetupload();
           if (!stayHere) {
             toast.info("Redirecting");
             setTimeout(() => {

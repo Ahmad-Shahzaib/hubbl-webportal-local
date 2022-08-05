@@ -4050,14 +4050,32 @@ export function ir35ItemValidator(data = new Object()) {
   if (!isPureText(data.title)) {
     return "Title field must not contain special characters";
   }
-  if (data.category_id == "") {
-    return "Category field is required";
+  if (data.supply == "") {
+    return "Supply field is required";
   }
-  if (data.max_score == "" || Number(data.max_score) < 1) {
-    return "Max score must be 1 or greater";
+  if (!isPureText(data.supply)) {
+    return "Supply field must not contain special characters";
   }
-  if (data.category_Item_id == "" && !data.is_max_default) {
-    return "Max value must be set to default value if the category item is not selected";
+  if (data.twitter_followers == "") {
+    return "Twitter Followers field is required";
+  }
+  if (!isPureText(data.twitter_followers)) {
+    return "Twitter Followers field must not contain special characters";
+  }
+  if (data.discord_followers == "") {
+    return "Discord Followers field is required";
+  }
+  if (!isPureText(data.discord_followers)) {
+    return "Discord Followers field must not contain special characters";
+  }
+  if (data.end_date == "") {
+    return "Ending Date field is required";
+  }
+  if (data.type == "") {
+    return "Type field is required";
+  }
+  if (data.images == "") {
+    return "Image field is required";
   }
   return true;
 }

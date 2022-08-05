@@ -9,7 +9,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import HomeIcon from "@material-ui/icons/Home";
 import Chip from "@material-ui/core/Chip";
 import axios from "axios";
-import { URL, IMGURL, UPLOADURL, resolveUrl } from "dan-api/url";
+import { URL, STORAGEURL, UPLOADURL, resolveUrl } from "dan-api/url";
 import { getCookie, setCookie } from "dan-api/cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -26,6 +26,7 @@ import CHViewer from "../../UIElements/CHViewer";
 import { platformConfig } from "dan-api/platformConfig";
 import PDFViewer from "../../UIElements/PDFViewer";
 import { useHistory } from "react-router-dom";
+import Avatar from "@material-ui/core/Avatar";
 
 const styles = {
   root: {
@@ -37,7 +38,7 @@ const styles = {
 };
 
 function AllHotDrops(props) {
-  const title = brand.name + " - Admins";
+  const title = brand.name + " - Hot Drops";
   const description = brand.desc;
   const [data, setData] = useState([]);
   const [dataIDs, setDataIDs] = useState([]);
@@ -113,9 +114,18 @@ function AllHotDrops(props) {
       },
     },
     {
-      name: "Image",
+      name: "image",
       options: {
-        filter: true,
+        filter: false,
+        customBodyRender: (value) => {
+          return (
+            <Avatar
+              alt={"image"}
+              src={STORAGEURL + (value)}
+              className={props.classes.avatar}
+            />
+          );
+        },
       },
     },
     {
@@ -143,6 +153,18 @@ function AllHotDrops(props) {
       },
     },
     {
+      name: "End Date",
+      options: {
+        filter: true,
+      },
+    },
+    {
+      name: "Type",
+      options: {
+        filter: true,
+      },
+    },
+    {
       name: "Countdown",
       options: {
         filter: true,
@@ -160,7 +182,7 @@ function AllHotDrops(props) {
   useEffect(() => {
     if (getCookie("id")) {
       if (!data.length) {
-        // getData(10);
+        getData(10);
       }
     } else {
       window.location.href = "/login";
@@ -262,63 +284,44 @@ function AllHotDrops(props) {
 
   // main methods
   function getData(l) {
-    let url = URL + "users/except" + "/" + getCookie("id");
-    if (l) {
-      url += "/" + l;
-    } else {
-      url += "/" + 100000;
-    }
-    loading(false);
 
-    // axios({
-    //   method: "POST",
-    //   url: url,
-    //   //   timeout: 200000,
-    // })
-    //   .then((res) => {
-    //     // console.log(res.data);
-    //     if (res.data.status == 200) {
-    //       let items = [];
-    //       for (let i = 0; i < res.data.users.length; i++) {
-    //         let item = [];
-    //         item.push(res.data.users[i].id);
-    //         item.push(
-    //           res.data.users[i].first_name && res.data.users[i].last_name
-    //             ? res.data.users[i].first_name +
-    //                 " " +
-    //                 res.data.users[i].last_name
-    //             : "N/A"
-    //         );
-    //         item.push(res.data.users[i].username);
-    //         item.push(
-    //           res.data.users[i].email ? res.data.users[i].email : "N/A"
-    //         );
-    //         item.push(
-    //           res.data.users[i].phone ? res.data.users[i].phone : "N/A"
-    //         );
-    //         item.push(
-    //           res.data.users[i].country ? res.data.users[i].country : "N/A"
-    //         );
-    //         item.push(res.data.users[i].status);
-
-    //         items.push(item);
-    //       }
-    //       setDataIDs([]);
-    //       setData(items);
-    //     } else {
-    //       toast.error("Something Went Wrong!");
-    //     }
-    //     loading(false);
-    //   })
-    //   .catch((err) => {
-    //     loading(false);
-    //     toast.error("Something Went Wrong!");
-    //     // console.log(err);
-    //     // if (err.response) {
-    //     //   console.log(err.response.status);
-    //     //   console.log(err.response.data);
-    //     // }
-    //   });
+    axios({
+      method: "POST",
+      url: URL + 'hotdrops/get',
+      //   timeout: 200000,
+    })
+      .then((res) => {
+        // console.log(res.data);
+        if (res.data.status == 200) {
+          let items= [];
+          for (let i = 0; i < res.data.hotdrops.length; i++) {
+            let item = [];
+            item.push(res.data.hotdrops[i].id);
+            item.push(res.data.hotdrops[i].image);
+            item.push(res.data.hotdrops[i].title);
+            item.push(res.data.hotdrops[i].supply);
+            item.push(res.data.hotdrops[i].twitter_followers);
+            item.push(res.data.hotdrops[i].discord_followers);
+            item.push(res.data.hotdrops[i].end_date);
+            item.push(res.data.hotdrops[i].type);
+            items.push(item);
+          }
+          setDataIDs([]);
+          setData(items);
+        } else {
+          toast.error("Something Wennt Wrong!");
+        }
+        loading(false);
+      })
+      .catch((err) => {
+        loading(false);
+        toast.error("Something Went Wrong!");
+        console.log(err);
+        if (err.response) {
+          console.log(err.response.status);
+          console.log(err.response.data);
+        }
+      });
   }
 
   function updateStatus(status) {
@@ -416,7 +419,7 @@ function AllHotDrops(props) {
         whiteBg
         icon="ion-md-car"
         title="Hubbl - NFT Hot Drops"
-        desc="All Users List"
+        desc="All Hot Drops List"
       >
         <Grid
           xs={12}
@@ -489,8 +492,8 @@ function AllHotDrops(props) {
         </Grid>
         <div>
           <AdvFilter
-            title="Users"
-            menuPrefix="users"
+            title="Hot Drops"
+            menuPrefix="Hot Drops"
             columns={columns}
             data={data}
             rowsSelected={dataIDs.length ? rowsSelected : []}

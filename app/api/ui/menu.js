@@ -18,10 +18,21 @@ let routes = [
       linkParent: "/app/analytics",
     },
     {
-      key: "ir35",
+      key: "hot-drops",
       name: "Hot Drops",
       icon: "ion-ios-list-box",
-      linkParent: "/app/hot-drops",
+      child: [
+        {
+          key: "all-hotdrops",
+          name: "All Hot Drops",
+          link: "/app/hot-drops",
+        },
+        {
+          key: "add-hotdrops",
+          name: "Add Hot Drops",
+          link: "/app/add-hot-drops",
+        }
+      ]
     },
     {
       key: "drivers",
