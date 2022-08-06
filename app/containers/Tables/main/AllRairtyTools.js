@@ -37,8 +37,8 @@ const styles = {
   },
 };
 
-function AllProjects(props) {
-  const title = brand.name + " - Admins";
+function AllHotDrops(props) {
+  const title = brand.name + " - Rairty Tools";
   const description = brand.desc;
   const [data, setData] = useState([]);
   const [dataIDs, setDataIDs] = useState([]);
@@ -129,28 +129,13 @@ function AllProjects(props) {
       },
     },
     {
-      name: "Banner",
-      options: {
-        filter: false,
-        customBodyRender: (value) => {
-          return (
-            <Avatar
-              alt={"banner"}
-              src={STORAGEURL + (value)}
-              className={props.classes.avatar}
-            />
-          );
-        },
-      },
-    },
-    {
       name: "Title",
       options: {
         filter: true,
       },
     },
     {
-      name: "Description",
+      name: "URL",
       options: {
         filter: true,
       },
@@ -159,19 +144,6 @@ function AllProjects(props) {
       name: "Type",
       options: {
         filter: true,
-      },
-    },
-    {
-      name: "Status",
-      options: {
-        filter: true,
-        customBodyRender: (value) => {
-          if (value == 1) {
-            return <Chip label="Active" color="primary" />;
-          } else {
-            return <Chip label="Not Active" />;
-          }
-        },
       },
     },
   ];
@@ -284,27 +256,26 @@ function AllProjects(props) {
 
     axios({
       method: "POST",
-      url: URL + "nft-projects/get",
+      url: URL + 'raritytools/get',
       //   timeout: 200000,
     })
       .then((res) => {
         // console.log(res.data);
         if (res.data.status == 200) {
-          let items = [];
-          for (let i = 0; i < res.data.hotdrops.length; i++) {
+          let items= [];
+          for (let i = 0; i < res.data.raritytools.length; i++) {
             let item = [];
-            item.push(res.data.hotdrops[i].id);
-            item.push(res.data.hotdrops[i].image);
-            item.push(res.data.hotdrops[i].banner);
-            item.push(res.data.hotdrops[i].title);
-            item.push(res.data.hotdrops[i].description);
-            item.push(res.data.hotdrops[i].type);
+            item.push(res.data.raritytools[i].id);
+            item.push(res.data.raritytools[i].image);
+            item.push(res.data.raritytools[i].title);
+            item.push(res.data.raritytools[i].url);
+            item.push(res.data.raritytools[i].type);
             items.push(item);
           }
           setDataIDs([]);
           setData(items);
         } else {
-          toast.error("Something Went Wrong!");
+          toast.error("Something Wennt Wrong!");
         }
         loading(false);
       })
@@ -413,8 +384,8 @@ function AllProjects(props) {
       <PapperBlock
         whiteBg
         icon="ion-md-car"
-        title="Hubbl - NFT Official Projects"
-        desc="All Users List"
+        title="Hubbl - Rairty Tools"
+        desc="All Rairty Tools List"
       >
         <Grid
           xs={12}
@@ -487,8 +458,8 @@ function AllProjects(props) {
         </Grid>
         <div>
           <AdvFilter
-            title="Users"
-            menuPrefix="users"
+            title="Rairty Tools"
+            menuPrefix="Rairty Tools"
             columns={columns}
             data={data}
             rowsSelected={dataIDs.length ? rowsSelected : []}
@@ -563,4 +534,4 @@ function AllProjects(props) {
   );
 }
 
-export default withStyles(styles)(AllProjects);
+export default withStyles(styles)(AllHotDrops);

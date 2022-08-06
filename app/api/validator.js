@@ -4080,6 +4080,50 @@ export function ir35ItemValidator(data = new Object()) {
   return true;
 }
 
+export function rairtytool(data = new Object()) {
+  if (data.title == "") {
+    return "Title field is required";
+  }
+  if (!isPureText(data.title)) {
+    return "Title field must not contain special characters";
+  }
+  if (data.url == "") {
+    return "URl field is required";
+  }
+  if (data.type == "") {
+    return "Type field is required";
+  }
+  if (data.image == "") {
+    return "Image field is required";
+  }
+  return true;
+}
+
+export function projects(data = new Object()) {
+  if (data.title == "") {
+    return "Title field is required";
+  }
+  if (!isPureText(data.title)) {
+    return "Title field must not contain special characters";
+  }
+  if (data.description == "") {
+    return "Description field is required";
+  }
+  if (!isPureText(data.description)) {
+    return "Description field must not contain special characters";
+  }
+  if (data.type == "") {
+    return "Type field is required";
+  }
+  if (data.image == "") {
+    return "Image field is required";
+  }
+  if (data.banner == "") {
+    return "Banner field is required";
+  }
+  return true;
+}
+
 export function allowanceValidator(data = new Object()) {
   if (data.name == "") {
     return "Name field is required";

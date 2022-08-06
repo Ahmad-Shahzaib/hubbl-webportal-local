@@ -35,10 +35,38 @@ let routes = [
       ]
     },
     {
-      key: "drivers",
+      key: "rairty-tools",
+      name: "Rairty Tools",
+      icon: "ion-ios-list-box",
+      child: [
+        {
+          key: "all-rairtytools",
+          name: "All Rairty Tools",
+          link: "/app/rairty-tools",
+        },
+        {
+          key: "add-rairtytools",
+          name: "Add Rairty Tools",
+          link: "/app/add-rairtytools",
+        }
+      ]
+    },
+    {
+      key: "nft-official-projects",
       name: "Nft Official Projects",
       icon: "ion-md-car",
-      linkParent: "/app/nft-official-projects",
+      child: [
+        {
+          key: "all-nft-official-projects",
+          name: "All Nft Official Projects",
+          link: "/app/nft-official-projects",
+        },
+        {
+          key: "add-nft-official-projects",
+          name: "Add Nft Official Projects",
+          link: "/app/add-nft-official-projects",
+        }
+      ]
     },
     {
       key: "company_houses",

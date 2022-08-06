@@ -9,7 +9,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import HomeIcon from "@material-ui/icons/Home";
 import Chip from "@material-ui/core/Chip";
 import axios from "axios";
-import { URL, IMGURL, UPLOADURL, resolveUrl } from "dan-api/url";
+import { URL, STORAGEURL, UPLOADURL, resolveUrl } from "dan-api/url";
 import { getCookie, setCookie } from "dan-api/cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -26,6 +26,7 @@ import CHViewer from "../../UIElements/CHViewer";
 import { platformConfig } from "dan-api/platformConfig";
 import PDFViewer from "../../UIElements/PDFViewer";
 import { useHistory } from "react-router-dom";
+import Avatar from "@material-ui/core/Avatar";
 
 const styles = {
   root: {
@@ -37,7 +38,7 @@ const styles = {
 };
 
 function AllAnalytics(props) {
-  const title = brand.name + " - Admins";
+  const title = brand.name + " - Analytics";
   const description = brand.desc;
   const [data, setData] = useState([]);
   const [dataIDs, setDataIDs] = useState([]);
@@ -115,17 +116,38 @@ function AllAnalytics(props) {
     {
       name: "Image",
       options: {
-        filter: true,
+        filter: false,
+        customBodyRender: (value) => {
+          return (
+            <Avatar
+              alt={"image"}
+              src={(value)}
+              className={props.classes.avatar}
+            />
+          );
+        },
       },
     },
     {
-      name: "Title",
+      name: "Name",
       options: {
         filter: true,
       },
     },
     {
-      name: "Items",
+      name: "Volume",
+      options: {
+        filter: true,
+      },
+    },
+    {
+      name: "24h%",
+      options: {
+        filter: true,
+      },
+    },
+    {
+      name: "7d%",
       options: {
         filter: true,
       },
@@ -143,16 +165,9 @@ function AllAnalytics(props) {
       },
     },
     {
-      name: "Status",
+      name: "Items",
       options: {
         filter: true,
-        customBodyRender: (value) => {
-          if (value == 1) {
-            return <Chip label="Active" color="primary" />;
-          } else {
-            return <Chip label="Not Active" />;
-          }
-        },
       },
     },
   ];
@@ -160,7 +175,7 @@ function AllAnalytics(props) {
   useEffect(() => {
     if (getCookie("id")) {
       if (!data.length) {
-        // getData(10);
+        getData(10);
       }
     } else {
       window.location.href = "/login";
@@ -262,63 +277,45 @@ function AllAnalytics(props) {
 
   // main methods
   function getData(l) {
-    let url = URL + "users/except" + "/" + getCookie("id");
-    if (l) {
-      url += "/" + l;
-    } else {
-      url += "/" + 100000;
-    }
-    loading(false);
 
-    // axios({
-    //   method: "POST",
-    //   url: url,
-    //   //   timeout: 200000,
-    // })
-    //   .then((res) => {
-    //     // console.log(res.data);
-    //     if (res.data.status == 200) {
-    //       let items = [];
-    //       for (let i = 0; i < res.data.users.length; i++) {
-    //         let item = [];
-    //         item.push(res.data.users[i].id);
-    //         item.push(
-    //           res.data.users[i].first_name && res.data.users[i].last_name
-    //             ? res.data.users[i].first_name +
-    //                 " " +
-    //                 res.data.users[i].last_name
-    //             : "N/A"
-    //         );
-    //         item.push(res.data.users[i].username);
-    //         item.push(
-    //           res.data.users[i].email ? res.data.users[i].email : "N/A"
-    //         );
-    //         item.push(
-    //           res.data.users[i].phone ? res.data.users[i].phone : "N/A"
-    //         );
-    //         item.push(
-    //           res.data.users[i].country ? res.data.users[i].country : "N/A"
-    //         );
-    //         item.push(res.data.users[i].status);
-
-    //         items.push(item);
-    //       }
-    //       setDataIDs([]);
-    //       setData(items);
-    //     } else {
-    //       toast.error("Something Went Wrong!");
-    //     }
-    //     loading(false);
-    //   })
-    //   .catch((err) => {
-    //     loading(false);
-    //     toast.error("Something Went Wrong!");
-    //     // console.log(err);
-    //     // if (err.response) {
-    //     //   console.log(err.response.status);
-    //     //   console.log(err.response.data);
-    //     // }
-    //   });
+    axios({
+      method: "POST",
+      url: URL + 'analytics/get',
+      //   timeout: 200000,
+    })
+      .then((res) => {
+        // console.log(res.data);
+        if (res.data.status == 200) {
+          let items = [];
+          for (let i = 0; i < res.data.analytics.length; i++) {
+            let item = [];
+            item.push(res.data.analytics[i].id);
+            item.push(res.data.analytics[i].image_url);
+            item.push(res.data.analytics[i].name);
+            item.push(res.data.analytics[i].total_volume);
+            item.push(res.data.analytics[i].one_day_volume);
+            item.push(res.data.analytics[i].seven_day_volume);
+            item.push(res.data.analytics[i].floor_price);
+            item.push(res.data.analytics[i].num_owners);
+            item.push(res.data.analytics[i].count);
+            items.push(item);
+          }
+          setDataIDs([]);
+          setData(items);
+        } else {
+          toast.error("Something Went Wrong!");
+        }
+        loading(false);
+      })
+      .catch((err) => {
+        loading(false);
+        toast.error("Something Went Wrong!");
+        console.log(err);
+        if (err.response) {
+          console.log(err.response.status);
+          console.log(err.response.data);
+        }
+      });
   }
 
   function updateStatus(status) {
@@ -416,7 +413,7 @@ function AllAnalytics(props) {
         whiteBg
         icon="ion-md-car"
         title="Hubbl - Analytics"
-        desc="All Users List"
+        desc="All Analytics List"
       >
         <Grid
           xs={12}
@@ -489,8 +486,8 @@ function AllAnalytics(props) {
         </Grid>
         <div>
           <AdvFilter
-            title="Users"
-            menuPrefix="users"
+            title="Analytics"
+            menuPrefix="Analytics"
             columns={columns}
             data={data}
             rowsSelected={dataIDs.length ? rowsSelected : []}

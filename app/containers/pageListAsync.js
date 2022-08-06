@@ -43,7 +43,18 @@ export const AddHotDrops = loadable(() => import("./Forms/AddHotDrops"), {
   fallback: <Loading />,
 });
 
+export const AllRairtyTools = loadable(() => import("./Tables/main/AllRairtyTools"), {
+  fallback: <Loading />,
+});
+export const AddRairtyTools = loadable(() => import("./Forms/AddRairtyTools"), {
+  fallback: <Loading />,
+});
+
 export const AllProjects = loadable(() => import("./Tables/main/AllProjects"), {
+  fallback: <Loading />,
+});
+
+export const AddProjects = loadable(() => import("./Forms/AddProjects"), {
   fallback: <Loading />,
 });
 

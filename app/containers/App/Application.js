@@ -99,6 +99,9 @@ import {
   AllHotDrops,
   AddHotDrops,
   AllProjects,
+  AddProjects,
+  AddRairtyTools,
+  AllRairtyTools
 } from "../pageListAsync";
 
 function Application(props) {
@@ -120,7 +123,10 @@ function Application(props) {
         <Route path="/app/feedbacks" component={AllFeedbacks} />
         <Route path="/app/hot-drops" component={AllHotDrops} />
         <Route path="/app/add-hot-drops" component={AddHotDrops} />
+        <Route path="/app/add-rairtytools" component={AddRairtyTools} />
+        <Route path="/app/rairty-tools" component={AllRairtyTools} />
         <Route path="/app/nft-official-projects" component={AllProjects} />
+        <Route path="/app/add-nft-official-projects" component={AddProjects} />
 
         <Route path="/app/calendar" component={Calendar} />
         <Route path="/app/help-support" component={HelpSupport} />
