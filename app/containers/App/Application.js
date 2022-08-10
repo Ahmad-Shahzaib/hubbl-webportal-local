@@ -101,7 +101,8 @@ import {
   AllProjects,
   AddProjects,
   AddRairtyTools,
-  AllRairtyTools
+  AllRairtyTools,
+  EditUser
 } from "../pageListAsync";
 
 function Application(props) {
@@ -119,6 +120,7 @@ function Application(props) {
         /> */}
         {/* main */}
         <Route path="/app/users" component={AllUsers} />
+        <Route path="/app/edit-user" component={EditUser} />
         <Route path="/app/analytics" component={AllAnalytics} />
         <Route path="/app/feedbacks" component={AllFeedbacks} />
         <Route path="/app/hot-drops" component={AllHotDrops} />

@@ -35,7 +35,9 @@ export const AllAnalytics = loadable(
     fallback: <Loading />,
   }
 );
-
+export const EditUser = loadable(() => import("./Forms/EditUser"), {
+  fallback: <Loading />,
+});
 export const AllHotDrops = loadable(() => import("./Tables/main/AllHotDrops"), {
   fallback: <Loading />,
 });
