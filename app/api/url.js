@@ -6,10 +6,10 @@ import FormData from "form-data";
 // export const STORAGEURL = "https://clownfish-app-nxbnq.ondigitalocean.app/";
 // export const IMAGEURL =
 //   "https://clownfish-app-nxbnq.ondigitalocean.app/public/images/";
-export const URL = "https://cdc7-2400-adc7-913-4200-a8ed-565b-ada0-89d4.ap.ngrok.io/";
-export const STORAGEURL = "https://cdc7-2400-adc7-913-4200-a8ed-565b-ada0-89d4.ap.ngrok.io/";
+export const URL = "https://6134-2400-adc7-913-4200-d0b4-92ac-3183-2def.in.ngrok.io/";
+export const STORAGEURL = "https://6134-2400-adc7-913-4200-d0b4-92ac-3183-2def.in.ngrok.io/";
 export const IMAGEURL =
-  "https://cdc7-2400-adc7-913-4200-a8ed-565b-ada0-89d4.ap.ngrok.io/public/images/";
+  "https://6134-2400-adc7-913-4200-d0b4-92ac-3183-2def.in.ngrok.io/public/images/";
 const ETHERSCANURL = "https://api.etherscan.io/api/";
 const OWLRACLEURL = "https://owlracle.info/eth/";
 const OPENSEAURL = "https://testnets-api.opensea.io/api/v1/";

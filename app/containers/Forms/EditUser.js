@@ -154,7 +154,7 @@ function AddIR35ItemForm() {
     }
     axios({
       method: "PUT",
-      url: URL + "/users/update/"+getCookie('editDataId'),
+      url: URL + "users/update/"+getCookie('editDataId'),
       data: formdata,
       headers: {
         "Content-Type": "multipart/form-data",
@@ -165,7 +165,6 @@ function AddIR35ItemForm() {
         if (res.data.status == 100) {
           toast.warn(res.data.message);
         } else {
-          setData(defaultDataConfig);
           if (!stayHere) {
             toast.info("Redirecting");
             setTimeout(() => {
@@ -184,7 +183,6 @@ function AddIR35ItemForm() {
   };
 
   const submitt = () => {
-    console.log(getCookie("editDataId"));
     axios({
       method: "POST",
       url: URL + "users/getUser",
@@ -192,7 +190,7 @@ function AddIR35ItemForm() {
     })
       .then((res) => {
         // console.log(res);
-        if (res.data.status == true) {
+        if (res.data.id == getCookie("editDataId")) {
           data.isVerified = res.data.isVerified;
           data.can_host = res.data.can_host;
         } else {
@@ -280,7 +278,7 @@ function AddIR35ItemForm() {
                           color="primary"
                         />
                       }
-                      label="Stay on this page"
+                      label="Can Host"
                       style={{ marginLeft: 10 }}
                     />
                       </div>
@@ -299,18 +297,6 @@ function AddIR35ItemForm() {
                     >
                       Submit
                     </Button>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          value="checkedD"
-                          checked={stayHere ? true : false}
-                          onChange={() => setStayHere(!stayHere)}
-                          color="primary"
-                        />
-                      }
-                      label="Stay on this page"
-                      style={{ marginLeft: 10 }}
-                    />
                   </div>
                 </form>
               </Paper>

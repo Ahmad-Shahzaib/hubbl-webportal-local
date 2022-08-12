@@ -143,11 +143,37 @@ function AllUsers(props) {
       },
     },
     {
+      name: "Is Varified",
+      options: {
+        filter: true,
+        customBodyRender: (value) => {
+          if (value == true) {
+            return <Chip label="Yes" color="primary" />;
+          } else {
+            return <Chip label="No" />;
+          }
+        },
+      },
+    },
+    {
+      name: "Can Host",
+      options: {
+        filter: true,
+        customBodyRender: (value) => {
+          if (value == true) {
+            return <Chip label="Yes" color="primary" />;
+          } else {
+            return <Chip label="No" />;
+          }
+        },
+      },
+    },
+    {
       name: "Status",
       options: {
         filter: true,
         customBodyRender: (value) => {
-          if (value == 1) {
+          if (value == true) {
             return <Chip label="Active" color="primary" />;
           } else {
             return <Chip label="Not Active" />;
@@ -177,7 +203,7 @@ function AllUsers(props) {
     if (dataIDs.length == 1) {
       setCookie("editDataId", dataIDs[0]);
       // window.location.href = "edit-driver";
-      history.push("edit-user");
+      window.location.href = "/app/edit-user";
     } else {
       setDialog({
         open: true,
@@ -202,13 +228,14 @@ function AllUsers(props) {
           if (value !== null) {
             setDialog({
               open: true,
-              title: "Confirmation!",
+              title: "Confirmtion!",
               text:
                 "Change the status of the selected item(s) to " + title + "?",
               agreeBtnTitle: "Yes",
               disagreeBtnTitle: "No",
               onClose: ({ type }) => {
                 if (type) {
+                  console.log(dataIDs[0]);
                   updateStatus(value);
                 }
                 setDialog(defaultDialog);
@@ -298,7 +325,14 @@ function AllUsers(props) {
             item.push(
               res.data.users[i].country ? res.data.users[i].country : "N/A"
             );
-            item.push(res.data.users[i].status);
+            item.push(
+              res.data.users[i].isVerified ? true : false
+            );
+            item.push(
+              res.data.users[i].can_host ? true : false
+            );
+            item.push(res.data.users[i].status ? true : false);
+            console.log(res.data.users[i].status);
 
             items.push(item);
           }
@@ -323,16 +357,9 @@ function AllUsers(props) {
   function updateStatus(status) {
     // console.log(dataIDs);
     axios({
-      method: "POST",
-      url: URL + "updateDriverStatus",
-      data: JSON.stringify({
-        ids: dataIDs.join(","),
-        status: status,
-        type: getCookie("userType"),
-      }),
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
+      method: "PUT",
+      url: URL + "users/update/"+dataIDs[0],
+      data: {status: status},
     })
       .then((res) => {
         if (res.data.status == 200) {
@@ -501,7 +528,6 @@ function AllUsers(props) {
               history.push("add-driver");
             }}
             onEdit={() => onEdit()}
-            onDelete={() => onRemove()}
             onStatusChange={() => onStatusChange()}
             onSelect={({ indexes }) => {
               let ids = [];
@@ -533,9 +559,9 @@ function AllUsers(props) {
       <SpeedDial
         onEdit={() => onEdit()}
         onStatusChange={() => onStatusChange()}
-        onRemove={() => onRemove()}
         hidden={dataIDs.length}
         menuPrefix="driver"
+        noRemoveButton = {true}
       />
       {isCHLoading ? (
         <div

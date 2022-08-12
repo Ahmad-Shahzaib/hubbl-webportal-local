@@ -11,13 +11,13 @@ import moment from "moment";
 export const general = [
   {
     title: "Active",
-    value: 1,
+    value: true,
     backgroundColor: "#229954",
     icon: <CheckIcon style={{ color: "white" }} />,
   },
   {
     title: "Not Active",
-    value: 0,
+    value: false,
     backgroundColor: "#C0392B",
     icon: <CloseIcon style={{ color: "white" }} />,
   },
