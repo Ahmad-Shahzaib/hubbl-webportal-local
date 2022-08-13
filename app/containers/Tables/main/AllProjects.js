@@ -161,19 +161,6 @@ function AllProjects(props) {
         filter: true,
       },
     },
-    {
-      name: "Status",
-      options: {
-        filter: true,
-        customBodyRender: (value) => {
-          if (value == 1) {
-            return <Chip label="Active" color="primary" />;
-          } else {
-            return <Chip label="Not Active" />;
-          }
-        },
-      },
-    },
   ];
 
   useEffect(() => {
@@ -196,7 +183,7 @@ function AllProjects(props) {
     if (dataIDs.length == 1) {
       setCookie("editDataId", dataIDs[0]);
       // window.location.href = "edit-driver";
-      history.push("edit-user");
+      history.push("add-nft-official-projects");
     } else {
       setDialog({
         open: true,
@@ -350,14 +337,10 @@ function AllProjects(props) {
 
   function deleteItems() {
     axios({
-      method: "POST",
-      url: URL + "removeDriver",
-      data: JSON.stringify({
+      method: "DELETE",
+      url: URL + "nft-projects",
+      data: {
         ids: dataIDs.join(","),
-        type: getCookie("userType"),
-      }),
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
       },
     })
       .then((res) => {
@@ -532,6 +515,7 @@ function AllProjects(props) {
       <SpeedDial
         onEdit={() => onEdit()}
         onStatusChange={() => onStatusChange()}
+        noStatusButton={true}
         onRemove={() => onRemove()}
         hidden={dataIDs.length}
         menuPrefix="driver"

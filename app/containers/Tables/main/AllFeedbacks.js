@@ -21,7 +21,7 @@ import { Dots } from "react-activity";
 import "react-activity/dist/library.css";
 import { general } from "dan-api/status";
 import SelectDialog from "../../UIElements/demos/DialogModal/SelectDialog";
-import SpeedDial from "../../UIElements/SpeedDial";
+// import SpeedDial from "../../UIElements/SpeedDial";
 import CHViewer from "../../UIElements/CHViewer";
 import { platformConfig } from "dan-api/platformConfig";
 import PDFViewer from "../../UIElements/PDFViewer";
@@ -140,27 +140,25 @@ function AllFeedbacks(props) {
       name: "Praise",
       options: {
         filter: true,
+        customBodyRender: (value) => {
+          return (<div>{value.map((val)=>{
+                                return <Chip label={val} color="primary" />;
+                              })}</div>)
+        },
       },
     },
     {
       name: "Reviews",
-      //   options: {
-      //     filter: true,
-      //     customBodyRender: (value) => {
-      //       if (value == 1) {
-      //         return <Chip label="Active" color="primary" />;
-      //       } else {
-      //         return <Chip label="Not Active" />;
-      //       }
-      //     },
-      //   },
+        options: {
+          filter: true,
+        },
     },
   ];
 
   useEffect(() => {
     if (getCookie("id")) {
       if (!data.length) {
-        // getData(10);
+        getData(10);
       }
     } else {
       window.location.href = "/login";
@@ -262,63 +260,52 @@ function AllFeedbacks(props) {
 
   // main methods
   function getData(l) {
-    let url = URL + "users/except" + "/" + getCookie("id");
-    if (l) {
-      url += "/" + l;
-    } else {
-      url += "/" + 100000;
-    }
+    let url = URL + "feedbacks";
     loading(false);
 
-    // axios({
-    //   method: "POST",
-    //   url: url,
-    //   //   timeout: 200000,
-    // })
-    //   .then((res) => {
-    //     // console.log(res.data);
-    //     if (res.data.status == 200) {
-    //       let items = [];
-    //       for (let i = 0; i < res.data.users.length; i++) {
-    //         let item = [];
-    //         item.push(res.data.users[i].id);
-    //         item.push(
-    //           res.data.users[i].first_name && res.data.users[i].last_name
-    //             ? res.data.users[i].first_name +
-    //                 " " +
-    //                 res.data.users[i].last_name
-    //             : "N/A"
-    //         );
-    //         item.push(res.data.users[i].username);
-    //         item.push(
-    //           res.data.users[i].email ? res.data.users[i].email : "N/A"
-    //         );
-    //         item.push(
-    //           res.data.users[i].phone ? res.data.users[i].phone : "N/A"
-    //         );
-    //         item.push(
-    //           res.data.users[i].country ? res.data.users[i].country : "N/A"
-    //         );
-    //         item.push(res.data.users[i].status);
-
-    //         items.push(item);
-    //       }
-    //       setDataIDs([]);
-    //       setData(items);
-    //     } else {
-    //       toast.error("Something Went Wrong!");
-    //     }
-    //     loading(false);
-    //   })
-    //   .catch((err) => {
-    //     loading(false);
-    //     toast.error("Something Went Wrong!");
-    //     // console.log(err);
-    //     // if (err.response) {
-    //     //   console.log(err.response.status);
-    //     //   console.log(err.response.data);
-    //     // }
-    //   });
+    axios({
+      method: "POST",
+      url: url,
+      //   timeout: 200000,
+    })
+      .then((res) => {
+        // console.log(res.data);
+        if (res.data.status == 200) {
+          console.log(res.data);
+          let items = [];
+          for (let i = 0; i < res.data.feedbacks.length; i++) {
+            let item = [];
+            item.push(res.data.feedbacks[i].id);
+            item.push(
+              res.data.feedbacks[i].user.first_name && res.data.feedbacks[i].user.last_name
+                ? res.data.feedbacks[i].user.first_name +
+                    " " +
+                    res.data.feedbacks[i].user.last_name
+                : "N/A"
+            );
+            item.push(res.data.feedbacks[i].communication);
+            item.push(res.data.feedbacks[i].safety);
+            item.push(res.data.feedbacks[i].recommendation);
+            item.push(res.data.feedbacks[i].praise.split(','));
+            item.push(res.data.feedbacks[i].review);
+            items.push(item);
+          }
+          setDataIDs([]);
+          setData(items);
+        } else {
+          toast.error("Something Went Wrong!");
+        }
+        loading(false);
+      })
+      .catch((err) => {
+        loading(false);
+        toast.error("Something Went Wrong!");
+        // console.log(err);
+        // if (err.response) {
+        //   console.log(err.response.status);
+        //   console.log(err.response.data);
+        // }
+      });
   }
 
   function updateStatus(status) {
@@ -530,14 +517,6 @@ function AllFeedbacks(props) {
           onCloseRequest={() => setDisplayImageViewer(false)}
         />
       )}
-
-      <SpeedDial
-        onEdit={() => onEdit()}
-        onStatusChange={() => onStatusChange()}
-        onRemove={() => onRemove()}
-        hidden={dataIDs.length}
-        menuPrefix="driver"
-      />
       {isCHLoading ? (
         <div
           style={{

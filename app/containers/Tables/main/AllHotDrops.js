@@ -164,19 +164,6 @@ function AllHotDrops(props) {
         filter: true,
       },
     },
-    {
-      name: "Countdown",
-      options: {
-        filter: true,
-        customBodyRender: (value) => {
-          if (value == 1) {
-            return <Chip label="Active" color="primary" />;
-          } else {
-            return <Chip label="Not Active" />;
-          }
-        },
-      },
-    },
   ];
 
   useEffect(() => {
@@ -199,7 +186,7 @@ function AllHotDrops(props) {
     if (dataIDs.length == 1) {
       setCookie("editDataId", dataIDs[0]);
       // window.location.href = "edit-driver";
-      history.push("edit-user");
+      history.push("add-hot-drops");
     } else {
       setDialog({
         open: true,
@@ -355,14 +342,10 @@ function AllHotDrops(props) {
 
   function deleteItems() {
     axios({
-      method: "POST",
-      url: URL + "removeDriver",
-      data: JSON.stringify({
+      method: "DELETE",
+      url: URL + "hotdrops",
+      data: {
         ids: dataIDs.join(","),
-        type: getCookie("userType"),
-      }),
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
       },
     })
       .then((res) => {
@@ -536,7 +519,7 @@ function AllHotDrops(props) {
 
       <SpeedDial
         onEdit={() => onEdit()}
-        onStatusChange={() => onStatusChange()}
+        noStatusButton = {true}
         onRemove={() => onRemove()}
         hidden={dataIDs.length}
         menuPrefix="driver"

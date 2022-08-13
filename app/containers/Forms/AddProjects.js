@@ -7,7 +7,7 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import axios from "axios";
-import { getCookie, setCookie } from "dan-api/cookie";
+import { getCookie, setCookie , removeCookie } from "dan-api/cookie";
 import { URL } from "dan-api/url";
 import { projects } from "dan-api/validator";
 import { ToastContainer, toast } from "react-toastify";
@@ -96,7 +96,10 @@ function AddIR35ItemForm() {
 
   useEffect(() => {
     if (getCookie("id")) {
-      // getData();
+      if(getCookie("editDataId"))
+      {
+        getData();
+      }
     } else {
       window.location.href = "/login";
     }
@@ -132,14 +135,14 @@ function AddIR35ItemForm() {
 
   const getData = () => {
     axios({
-      method: "GET",
-      url: URL + "getIR35ItemFormData",
+      method: "POST",
+      url: URL + "nft-projects/"+getCookie('editDataId'),
     })
       .then((res) => {
         if (res.data.status == 100) {
           toast.warn(res.data.message);
         } else {
-          setForm(res.data);
+          setData(res.data.nftproject);
         }
         loading(false);
       })
@@ -161,6 +164,42 @@ function AddIR35ItemForm() {
     for (const property in data) {
       formdata.append(property, data[property]);
     }
+    if(getCookie('editDataId'))
+    {
+      axios({
+      method: "PUT",
+      url: URL + "nft-projects/update/"+getCookie('editDataId'),
+      data: formdata,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+      .then((res) => {
+        // console.log(res);
+        if (res.data.status == 200) {
+          toast.warn(res.data.message);
+          removeCookie('editDataId');
+          setData(defaultDataConfig);
+        } else {
+          setData(defaultDataConfig);
+          if (!stayHere) {
+            toast.info("Redirecting");
+            setTimeout(() => {
+              // window.location.href = "/app/IR35-Items";
+              history.back();
+            }, 1500);
+          }
+          toast.success(res.data.message);
+        }
+        loading(false);
+      })
+      .catch((e) => {
+        loading(false);
+        toast.error("Something Wennt Wrong!");
+      });
+    }
+    else
+    {
     axios({
       method: "POST",
       url: URL + "nft-projects",
@@ -190,6 +229,7 @@ function AddIR35ItemForm() {
         loading(false);
         toast.error("Something Went Wrong!");
       });
+    }
   };
 
   const title = brand.name + " - Add Hot Drops";

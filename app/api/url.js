@@ -2,14 +2,14 @@ import axios from "axios";
 import { getCookie } from "dan-api/cookie";
 import FormData from "form-data";
 
-// export const URL = "https://clownfish-app-nxbnq.ondigitalocean.app/";
-// export const STORAGEURL = "https://clownfish-app-nxbnq.ondigitalocean.app/";
-// export const IMAGEURL =
-//   "https://clownfish-app-nxbnq.ondigitalocean.app/public/images/";
-export const URL = "https://6134-2400-adc7-913-4200-d0b4-92ac-3183-2def.in.ngrok.io/";
-export const STORAGEURL = "https://6134-2400-adc7-913-4200-d0b4-92ac-3183-2def.in.ngrok.io/";
+export const URL = "https://clownfish-app-nxbnq.ondigitalocean.app/";
+export const STORAGEURL = "https://clownfish-app-nxbnq.ondigitalocean.app/";
 export const IMAGEURL =
-  "https://6134-2400-adc7-913-4200-d0b4-92ac-3183-2def.in.ngrok.io/public/images/";
+  "https://clownfish-app-nxbnq.ondigitalocean.app/public/images/";
+// export const URL = "https://6134-2400-adc7-913-4200-d0b4-92ac-3183-2def.in.ngrok.io/";
+// export const STORAGEURL = "https://6134-2400-adc7-913-4200-d0b4-92ac-3183-2def.in.ngrok.io/";
+// export const IMAGEURL =
+//   "https://6134-2400-adc7-913-4200-d0b4-92ac-3183-2def.in.ngrok.io/public/images/";
 const ETHERSCANURL = "https://api.etherscan.io/api/";
 const OWLRACLEURL = "https://owlracle.info/eth/";
 const OPENSEAURL = "https://testnets-api.opensea.io/api/v1/";

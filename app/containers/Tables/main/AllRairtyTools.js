@@ -168,7 +168,7 @@ function AllHotDrops(props) {
     if (dataIDs.length == 1) {
       setCookie("editDataId", dataIDs[0]);
       // window.location.href = "edit-driver";
-      history.push("edit-user");
+      history.push("add-rairtytools");
     } else {
       setDialog({
         open: true,
@@ -321,14 +321,10 @@ function AllHotDrops(props) {
 
   function deleteItems() {
     axios({
-      method: "POST",
-      url: URL + "removeDriver",
-      data: JSON.stringify({
+      method: "DELETE",
+      url: URL + "raritytools",
+      data: {
         ids: dataIDs.join(","),
-        type: getCookie("userType"),
-      }),
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
       },
     })
       .then((res) => {
@@ -502,6 +498,7 @@ function AllHotDrops(props) {
 
       <SpeedDial
         onEdit={() => onEdit()}
+        noStatusButton = {true}
         onStatusChange={() => onStatusChange()}
         onRemove={() => onRemove()}
         hidden={dataIDs.length}
