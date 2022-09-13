@@ -121,7 +121,7 @@ function AllAnalytics(props) {
           return (
             <Avatar
               alt={"image"}
-              src={(value)}
+              src={value}
               className={props.classes.avatar}
             />
           );
@@ -141,13 +141,7 @@ function AllAnalytics(props) {
       },
     },
     {
-      name: "24h%",
-      options: {
-        filter: true,
-      },
-    },
-    {
-      name: "7d%",
+      name: "Change",
       options: {
         filter: true,
       },
@@ -277,10 +271,9 @@ function AllAnalytics(props) {
 
   // main methods
   function getData(l) {
-
     axios({
       method: "POST",
-      url: URL + 'analytics/get',
+      url: URL + "analytics/get",
       //   timeout: 200000,
     })
       .then((res) => {
@@ -290,14 +283,13 @@ function AllAnalytics(props) {
           for (let i = 0; i < res.data.analytics.length; i++) {
             let item = [];
             item.push(res.data.analytics[i].id);
-            item.push(res.data.analytics[i].image_url);
+            item.push(res.data.analytics[i].imageUrl);
             item.push(res.data.analytics[i].name);
-            item.push(res.data.analytics[i].total_volume);
-            item.push(res.data.analytics[i].one_day_volume);
-            item.push(res.data.analytics[i].seven_day_volume);
-            item.push(res.data.analytics[i].floor_price);
-            item.push(res.data.analytics[i].num_owners);
-            item.push(res.data.analytics[i].count);
+            item.push(res.data.analytics[i].volume);
+            item.push(res.data.analytics[i].change);
+            item.push(res.data.analytics[i].floorPrice);
+            item.push(res.data.analytics[i].numOwners);
+            item.push(res.data.analytics[i].totalSupply);
             items.push(item);
           }
           setDataIDs([]);
@@ -310,7 +302,6 @@ function AllAnalytics(props) {
       .catch((err) => {
         loading(false);
         toast.error("Something Went Wrong!");
-        console.log(err);
         if (err.response) {
           console.log(err.response.status);
           console.log(err.response.data);
