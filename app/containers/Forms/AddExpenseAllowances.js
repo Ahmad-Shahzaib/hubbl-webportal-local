@@ -92,6 +92,7 @@ function AddExpenseAllowances() {
       data: { ...data, user_id: getCookie("user_id") },
       headers: {
         "content-type": "application/x-www-form-urlencoded",
+        Authorization: getCookie("token"),
       },
     })
       .then((res) => {

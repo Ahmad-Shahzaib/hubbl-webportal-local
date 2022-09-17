@@ -205,6 +205,7 @@ function EditDriver(props) {
             url: URL + "webRemoveDriverFile",
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
+              Authorization: getCookie("token"),
             },
           })
             .then((res) => {
@@ -295,6 +296,7 @@ function EditDriver(props) {
       data: formdata,
       headers: {
         "content-type": "multipart/form-data",
+        Authorization: getCookie("token"),
       },
     })
       .then((res) => {

@@ -295,10 +295,13 @@ function AllUsers(props) {
     } else {
       url += "/" + 100000;
     }
-
+    console.log(getCookie("token"))
     axios({
       method: "POST",
       url: url,
+      headers: {
+        Authorization: getCookie("token"),
+      },
       //   timeout: 200000,
     })
       .then((res) => {
@@ -325,12 +328,8 @@ function AllUsers(props) {
             item.push(
               res.data.users[i].country ? res.data.users[i].country : "N/A"
             );
-            item.push(
-              res.data.users[i].isVerified ? true : false
-            );
-            item.push(
-              res.data.users[i].can_host ? true : false
-            );
+            item.push(res.data.users[i].isVerified ? true : false);
+            item.push(res.data.users[i].can_host ? true : false);
             item.push(res.data.users[i].status ? true : false);
             console.log(res.data.users[i].status);
 
@@ -358,8 +357,8 @@ function AllUsers(props) {
     // console.log(dataIDs);
     axios({
       method: "PUT",
-      url: URL + "users/update/"+dataIDs[0],
-      data: {status: status},
+      url: URL + "users/update/" + dataIDs[0],
+      data: { status: status },
     })
       .then((res) => {
         if (res.data.status == 200) {
@@ -386,6 +385,7 @@ function AllUsers(props) {
       }),
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: getCookie("token"),
       },
     })
       .then((res) => {
@@ -561,7 +561,7 @@ function AllUsers(props) {
         onStatusChange={() => onStatusChange()}
         hidden={dataIDs.length}
         menuPrefix="driver"
-        noRemoveButton = {true}
+        noRemoveButton={true}
       />
       {isCHLoading ? (
         <div

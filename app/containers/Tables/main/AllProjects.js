@@ -121,7 +121,7 @@ function AllProjects(props) {
           return (
             <Avatar
               alt={"image"}
-              src={STORAGEURL + (value)}
+              src={STORAGEURL + value}
               className={props.classes.avatar}
             />
           );
@@ -136,7 +136,7 @@ function AllProjects(props) {
           return (
             <Avatar
               alt={"banner"}
-              src={STORAGEURL + (value)}
+              src={STORAGEURL + value}
               className={props.classes.avatar}
             />
           );
@@ -183,7 +183,7 @@ function AllProjects(props) {
     if (dataIDs.length == 1) {
       setCookie("editDataId", dataIDs[0]);
       // window.location.href = "edit-driver";
-      history.push("add-nft-official-projects");
+      history.push({ pathname: "add-nft-official-projects", state: true });
     } else {
       setDialog({
         open: true,
@@ -268,10 +268,12 @@ function AllProjects(props) {
 
   // main methods
   function getData(l) {
-
     axios({
       method: "POST",
       url: URL + "nft-projects/get",
+      headers: {
+        Authorization: getCookie("token"),
+      },
       //   timeout: 200000,
     })
       .then((res) => {
@@ -318,6 +320,7 @@ function AllProjects(props) {
       }),
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: getCookie("token"),
       },
     })
       .then((res) => {
@@ -341,6 +344,9 @@ function AllProjects(props) {
       url: URL + "nft-projects",
       data: {
         ids: dataIDs.join(","),
+      },
+      headers: {
+        Authorization: getCookie("token"),
       },
     })
       .then((res) => {

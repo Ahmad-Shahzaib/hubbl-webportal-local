@@ -7,7 +7,7 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import axios from "axios";
-import { getCookie, setCookie , removeCookie} from "dan-api/cookie";
+import { getCookie, setCookie, removeCookie } from "dan-api/cookie";
 import { URL } from "dan-api/url";
 import { ir35ItemValidator } from "dan-api/validator";
 import { ToastContainer, toast } from "react-toastify";
@@ -21,15 +21,14 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Switch from "@material-ui/core/Switch";
 import {
-  KeyboardDatePicker,
+  KeyboardDateTimePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
 import moment from "moment";
 import UploadInputImg from "./demos/UploadInputImg";
 import FormData from "form-data";
-
-
+import { useLocation } from "react-router-dom";
 const styles = (theme) => ({
   root: {
     flexGrow: 1,
@@ -66,20 +65,22 @@ function AddIR35ItemForm() {
   });
   const defaultDataConfig = {
     end_date: "",
-    type:"",
-    image:null,
+    type: "",
+    image: null,
     title: "",
-    supply:"",
-    twitter_followers:"",
-    discord_followers:"",
+    supply: "",
+    twitter_followers: "",
+    discord_followers: "",
   };
   const [errors, setErrors] = useState({});
   const [data, setData] = useState(defaultDataConfig);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [stayHere, setStayHere] = useState(true);
-
+  const [dateTimeCheck, setDateTimeCheck] = useState(false);
+  const pathLocation = useLocation();
   const handleChangeDate = (name) => (event) => {
+    // console.log(event._d);
     if (event) {
       setData({
         ...data,
@@ -96,17 +97,25 @@ function AddIR35ItemForm() {
     }));
   };
 
-  useEffect(() => {
+  const onEdit = () => {
     if (getCookie("id")) {
-      if(getCookie("editDataId"))
-      {
+      if (getCookie("editDataId")) {
+        console.log(getCookie("editDataId"))
         getData();
       }
     } else {
       window.location.href = "/login";
     }
-  }, []);
+    if (pathLocation.state === false) {
+      removeCookie("editDataId");
+    }
+  };
 
+  useEffect(() => {
+    if (pathLocation.state) {
+      onEdit();
+    }
+  }, []);
   function loading(status) {
     setIsLoading(status);
   }
@@ -138,13 +147,16 @@ function AddIR35ItemForm() {
   const getData = () => {
     axios({
       method: "POST",
-      url: URL + "hotdrops/"+getCookie('editDataId'),
+      url: URL + "hotdrops/" + getCookie("editDataId"),
+      headers: {
+        Authorization: getCookie("token"),
+      },
     })
       .then((res) => {
         if (res.data.status == 100) {
           toast.warn(res.data.message);
         } else {
-          console.log(res.data);
+          console.log(res.data.hotdrop);
           setData(res.data.hotdrop);
         }
         loading(false);
@@ -156,6 +168,9 @@ function AddIR35ItemForm() {
   };
 
   const submit = () => {
+    if (dateTimeCheck) {
+      data.end_date = "TBD";
+    }
     const isValid = ir35ItemValidator(data);
     if (typeof isValid == "string") {
       toast.warn(isValid);
@@ -167,71 +182,71 @@ function AddIR35ItemForm() {
     for (const property in data) {
       formdata.append(property, data[property]);
     }
-    if(getCookie('editDataId'))
-    {
+    if (getCookie("editDataId")) {
+      setData;
       axios({
-      method: "PUT",
-      url: URL + "hotdrops/update/"+getCookie('editDataId'),
-      data: formdata,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    })
-      .then((res) => {
-        // console.log(res);
-        if (res.data.status == 200) {
-          toast.warn(res.data.message);
-          removeCookie('editDataId');
-          setData(defaultDataConfig);
-        } else {
-          setData(defaultDataConfig);
-          if (!stayHere) {
-            toast.info("Redirecting");
-            setTimeout(() => {
-              // window.location.href = "/app/IR35-Items";
-              history.back();
-            }, 1500);
-          }
-          toast.success(res.data.message);
-        }
-        loading(false);
+        method: "PUT",
+        url: URL + "hotdrops/update/" + getCookie("editDataId"),
+        data: formdata,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: getCookie("token"),
+        },
       })
-      .catch((e) => {
-        loading(false);
-        toast.error("Something Wennt Wrong!");
-      });
-    }
-    else
-    {
-    axios({
-      method: "POST",
-      url: URL + "hotdrops",
-      data: formdata,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    })
-      .then((res) => {
-        // console.log(res);
-        if (res.data.status == 100) {
-          toast.warn(res.data.message);
-        } else {
-          setData(defaultDataConfig);
-          if (!stayHere) {
-            toast.info("Redirecting");
-            setTimeout(() => {
-              // window.location.href = "/app/IR35-Items";
-              history.back();
-            }, 1500);
+        .then((res) => {
+          // console.log(res);
+          if (res.data.status == 200) {
+            toast.success(res.data.message);
+            removeCookie("editDataId");
+            setData(defaultDataConfig);
+          } else {
+            setData(defaultDataConfig);
+            if (!stayHere) {
+              toast.info("Redirecting");
+              setTimeout(() => {
+                // window.location.href = "/app/IR35-Items";
+                history.back();
+              }, 1500);
+            }
+            toast.success(res.data.message);
           }
-          toast.success(res.data.message);
-        }
-        loading(false);
+          loading(false);
+        })
+        .catch((e) => {
+          loading(false);
+          toast.error("Something Wennt Wrong!");
+        });
+    } else {
+      axios({
+        method: "POST",
+        url: URL + "hotdrops",
+        data: formdata,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: getCookie("token"),
+        },
       })
-      .catch((e) => {
-        loading(false);
-        toast.error("Something Went Wrong!");
-      });
+        .then((res) => {
+          // console.log(res);
+          if (res.data.status == 100) {
+            toast.warn(res.data.message);
+          } else {
+            setData(defaultDataConfig);
+            if (!stayHere) {
+              toast.info("Redirecting");
+              setTimeout(() => {
+                // window.location.href = "/app/IR35-Items";
+                history.back();
+              }, 1500);
+            }
+            toast.success(res.data.message);
+          }
+          loading(false);
+        })
+        .catch((e) => {
+          loading(false);
+          toast.error("Something Went Wrong!");
+        });
     }
   };
 
@@ -352,19 +367,31 @@ function AddIR35ItemForm() {
                     </Grid>
                     <Grid md={6} sm={6} xs={12} item>
                       <div>
-                      <MuiPickersUtilsProvider utils={MomentUtils}>
-                        <KeyboardDatePicker
-                          label="End Date(in format DD/MM/YY)"
-                          format="DD/MM/YYYY"
-                          placeholder="DD/MM/YYYY"
-                          value={data.end_date ? moment(data.end_date) : undefined}
-                          onChange={handleChangeDate("end_date")}
-                          animateYearScrolling={false}
-                          style={{ width: "100%" }}
-                          disableFuture
+                        <MuiPickersUtilsProvider utils={MomentUtils}>
+                          <KeyboardDateTimePicker
+                            label="End Date(in format DD/MM/YY)"
+                            format="DD/MM/YYYY"
+                            placeholder="DD/MM/YYYY"
+                            value={
+                              data.end_date ? moment(data.end_date) : undefined
+                            }
+                            onChange={handleChangeDate("end_date")}
+                            animateYearScrolling={false}
+                            style={{ width: "100%" }}
+                            disabled={dateTimeCheck}
+                          />
+                        </MuiPickersUtilsProvider>
+                        <FormControlLabel
+                          label="TBD"
+                          control={
+                            <Checkbox
+                              checked={dateTimeCheck}
+                              onChange={() => setDateTimeCheck(!dateTimeCheck)}
+                            />
+                          }
                         />
-                      </MuiPickersUtilsProvider>
-                      {/* <Typography
+
+                        {/* <Typography
                         style={{ fontSize: 13, marginTop: -15, color: "red" }}
                       >
                         Ending_Date
@@ -373,7 +400,7 @@ function AddIR35ItemForm() {
                     </Grid>
                     <Grid md={12} sm={12} xs={12} item>
                       <div>
-                      <FormControl variant="standard" style={styles().field}>
+                        <FormControl variant="standard" style={styles().field}>
                           <InputLabel>Type</InputLabel>
                           <Select
                             value={data.type}
@@ -383,26 +410,23 @@ function AddIR35ItemForm() {
                             <MenuItem value="">
                               <em>None</em>
                             </MenuItem>
-                            <MenuItem value="reveal">
-                              Reveal
-                            </MenuItem>
-                            <MenuItem value="upcoming">
-                              Upcoming
-                            </MenuItem>
+                            <MenuItem value="reveal">Reveal</MenuItem>
+                            <MenuItem value="upcoming">Upcoming</MenuItem>
                           </Select>
                         </FormControl>
                       </div>
                     </Grid>
                     <Grid md={12} sm={12} xs={12} item>
-                    <div>
-                      <UploadInputImg
-                        onUpload={handleUpload("image")}
-                        text="Drag and drop Image here"
-                        files={data.image && [data.image]}
-                        showPreviews={false}
-                      style={{ width: "100%" }}
-                      />
-                    </div>
+                      <div>
+                        <UploadInputImg
+                          onUpload={handleUpload("image")}
+                          text="Drag and drop Image here"
+                          files={data.image && [data.image]}
+                          showPreviews={false}
+                          style={{ width: "100%" }}
+                        />
+                        {console.log(data.image)}
+                      </div>
                     </Grid>
                   </Grid>
                   <div>

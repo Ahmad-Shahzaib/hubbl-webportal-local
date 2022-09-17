@@ -121,7 +121,7 @@ function AllHotDrops(props) {
           return (
             <Avatar
               alt={"image"}
-              src={STORAGEURL + (value)}
+              src={STORAGEURL + value}
               className={props.classes.avatar}
             />
           );
@@ -168,7 +168,7 @@ function AllHotDrops(props) {
     if (dataIDs.length == 1) {
       setCookie("editDataId", dataIDs[0]);
       // window.location.href = "edit-driver";
-      history.push("add-rairtytools");
+      history.push({ pathname: "add-rairtytools", state: true });
     } else {
       setDialog({
         open: true,
@@ -253,16 +253,18 @@ function AllHotDrops(props) {
 
   // main methods
   function getData(l) {
-
     axios({
       method: "POST",
-      url: URL + 'raritytools/get',
+      url: URL + "raritytools/get",
+      headers: {
+        Authorization: getCookie("token"),
+      },
       //   timeout: 200000,
     })
       .then((res) => {
         // console.log(res.data);
         if (res.data.status == 200) {
-          let items= [];
+          let items = [];
           for (let i = 0; i < res.data.raritytools.length; i++) {
             let item = [];
             item.push(res.data.raritytools[i].id);
@@ -302,6 +304,7 @@ function AllHotDrops(props) {
       }),
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: getCookie("token"),
       },
     })
       .then((res) => {
@@ -325,6 +328,9 @@ function AllHotDrops(props) {
       url: URL + "raritytools",
       data: {
         ids: dataIDs.join(","),
+      },
+      headers: {
+        Authorization: getCookie("token"),
       },
     })
       .then((res) => {
@@ -498,7 +504,7 @@ function AllHotDrops(props) {
 
       <SpeedDial
         onEdit={() => onEdit()}
-        noStatusButton = {true}
+        noStatusButton={true}
         onStatusChange={() => onStatusChange()}
         onRemove={() => onRemove()}
         hidden={dataIDs.length}

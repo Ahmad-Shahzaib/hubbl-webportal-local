@@ -141,17 +141,21 @@ function AllFeedbacks(props) {
       options: {
         filter: true,
         customBodyRender: (value) => {
-          return (<div>{value.map((val)=>{
-                                return <Chip label={val} color="primary" />;
-                              })}</div>)
+          return (
+            <div>
+              {value.map((val) => {
+                return <Chip label={val} color="primary" />;
+              })}
+            </div>
+          );
         },
       },
     },
     {
       name: "Reviews",
-        options: {
-          filter: true,
-        },
+      options: {
+        filter: true,
+      },
     },
   ];
 
@@ -266,6 +270,9 @@ function AllFeedbacks(props) {
     axios({
       method: "POST",
       url: url,
+      headers: {
+        Authorization: getCookie("token"),
+      },
       //   timeout: 200000,
     })
       .then((res) => {
@@ -277,7 +284,8 @@ function AllFeedbacks(props) {
             let item = [];
             item.push(res.data.feedbacks[i].id);
             item.push(
-              res.data.feedbacks[i].user.first_name && res.data.feedbacks[i].user.last_name
+              res.data.feedbacks[i].user.first_name &&
+                res.data.feedbacks[i].user.last_name
                 ? res.data.feedbacks[i].user.first_name +
                     " " +
                     res.data.feedbacks[i].user.last_name
@@ -286,7 +294,7 @@ function AllFeedbacks(props) {
             item.push(res.data.feedbacks[i].communication);
             item.push(res.data.feedbacks[i].safety);
             item.push(res.data.feedbacks[i].recommendation);
-            item.push(res.data.feedbacks[i].praise.split(','));
+            item.push(res.data.feedbacks[i].praise.split(","));
             item.push(res.data.feedbacks[i].review);
             items.push(item);
           }
@@ -320,6 +328,7 @@ function AllFeedbacks(props) {
       }),
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: getCookie("token"),
       },
     })
       .then((res) => {
@@ -347,6 +356,7 @@ function AllFeedbacks(props) {
       }),
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: getCookie("token"),
       },
     })
       .then((res) => {

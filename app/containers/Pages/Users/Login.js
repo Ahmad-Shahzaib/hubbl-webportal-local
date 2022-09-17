@@ -34,15 +34,18 @@ function Login(props) {
         if (res.data.status == 400) {
           toast.warn(res.data.message);
         } else if (res.data.status == 200) {
-          setCookie("userType", "admin", 2);
-          setCookie("user_id", res.data.id, 2);
-          setCookie("email", res.data.email, 2);
-          setCookie("profile_image", JSON.stringify(res.data.avatar), 2);
-          setCookie("user", JSON.stringify(res.data), 2);
-
-          setCookie("id", res.data.id, 2);
-
-          window.location.href = "/app";
+          if (res.data.isAdmin) {
+            setCookie("userType", "admin", 2);
+            setCookie("user_id", res.data.id, 2);
+            setCookie("email", res.data.email, 2);
+            setCookie("profile_image", JSON.stringify(res.data.avatar), 2);
+            setCookie("user", JSON.stringify(res.data), 2);
+            setCookie("id", res.data.id, 2);
+            setCookie("token", res.data.token, 2);
+            window.location.href = "/app";
+          }else{
+            toast.warn("Not authorized");
+          }
         }
       })
       .catch((err) => {

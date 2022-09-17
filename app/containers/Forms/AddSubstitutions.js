@@ -192,6 +192,7 @@ function AddAgencyJobs(props) {
       data: formdata,
       headers: {
         "content-type": "multipart/form-data",
+        Authorization: getCookie("token"),
       },
     })
       .then((res) => {

@@ -140,6 +140,7 @@ function HgvDetails(props) {
       data: { ...data },
       headers: {
         "content-type": "application/x-www-form-urlencoded",
+        Authorization: getCookie("token"),
       },
     })
       .then((res) => {

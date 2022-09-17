@@ -7,7 +7,7 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import axios from "axios";
-import { getCookie, setCookie , removeCookie } from "dan-api/cookie";
+import { getCookie, setCookie, removeCookie } from "dan-api/cookie";
 import { URL } from "dan-api/url";
 import { projects } from "dan-api/validator";
 import { ToastContainer, toast } from "react-toastify";
@@ -28,7 +28,7 @@ import MomentUtils from "@date-io/moment";
 import moment from "moment";
 import UploadInputImg from "./demos/UploadInputImg";
 import FormData from "form-data";
-
+import { useLocation } from "react-router-dom";
 
 const styles = (theme) => ({
   root: {
@@ -60,16 +60,17 @@ const styles = (theme) => ({
 });
 
 function AddIR35ItemForm() {
+  const pathLocation = useLocation();
   const [form, setForm] = useState({
     categories: [],
     item_fields: [],
   });
   const defaultDataConfig = {
-    type:"",
-    image:"",
-    banner:"",
+    type: "",
+    image: "",
+    banner: "",
     title: "",
-    description:"",
+    description: "",
   };
   const [errors, setErrors] = useState({});
   const [data, setData] = useState(defaultDataConfig);
@@ -94,14 +95,22 @@ function AddIR35ItemForm() {
     }));
   };
 
-  useEffect(() => {
+  const onEdit = () => {
     if (getCookie("id")) {
-      if(getCookie("editDataId"))
-      {
+      if (getCookie("editDataId")) {
         getData();
       }
     } else {
       window.location.href = "/login";
+    }
+    if (pathLocation.state === false) {
+      removeCookie("editDataId");
+    }
+  };
+
+  useEffect(() => {
+    if (pathLocation.state) {
+      onEdit();
     }
   }, []);
 
@@ -136,7 +145,10 @@ function AddIR35ItemForm() {
   const getData = () => {
     axios({
       method: "POST",
-      url: URL + "nft-projects/"+getCookie('editDataId'),
+      url: URL + "nft-projects/" + getCookie("editDataId"),
+      headers: {
+        Authorization: getCookie("token"),
+      },
     })
       .then((res) => {
         if (res.data.status == 100) {
@@ -164,71 +176,70 @@ function AddIR35ItemForm() {
     for (const property in data) {
       formdata.append(property, data[property]);
     }
-    if(getCookie('editDataId'))
-    {
+    if (getCookie("editDataId")) {
       axios({
-      method: "PUT",
-      url: URL + "nft-projects/update/"+getCookie('editDataId'),
-      data: formdata,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    })
-      .then((res) => {
-        // console.log(res);
-        if (res.data.status == 200) {
-          toast.warn(res.data.message);
-          removeCookie('editDataId');
-          setData(defaultDataConfig);
-        } else {
-          setData(defaultDataConfig);
-          if (!stayHere) {
-            toast.info("Redirecting");
-            setTimeout(() => {
-              // window.location.href = "/app/IR35-Items";
-              history.back();
-            }, 1500);
-          }
-          toast.success(res.data.message);
-        }
-        loading(false);
+        method: "PUT",
+        url: URL + "nft-projects/update/" + getCookie("editDataId"),
+        data: formdata,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: getCookie("token"),
+        },
       })
-      .catch((e) => {
-        loading(false);
-        toast.error("Something Wennt Wrong!");
-      });
-    }
-    else
-    {
-    axios({
-      method: "POST",
-      url: URL + "nft-projects",
-      data: formdata,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    })
-      .then((res) => {
-        // console.log(res);
-        if (res.data.status == 100) {
-          toast.warn(res.data.message);
-        } else {
-          setData(defaultDataConfig);
-          if (!stayHere) {
-            toast.info("Redirecting");
-            setTimeout(() => {
-              // window.location.href = "/app/IR35-Items";
-              history.back();
-            }, 1500);
+        .then((res) => {
+          // console.log(res);
+          if (res.data.status == 200) {
+            toast.success(res.data.message);
+            removeCookie("editDataId");
+            setData(defaultDataConfig);
+          } else {
+            setData(defaultDataConfig);
+            if (!stayHere) {
+              toast.info("Redirecting");
+              setTimeout(() => {
+                // window.location.href = "/app/IR35-Items";
+                history.back();
+              }, 1500);
+            }
+            toast.success(res.data.message);
           }
-          toast.success(res.data.message);
-        }
-        loading(false);
+          loading(false);
+        })
+        .catch((e) => {
+          loading(false);
+          toast.error("Something Wennt Wrong!");
+        });
+    } else {
+      axios({
+        method: "POST",
+        url: URL + "nft-projects",
+        data: formdata,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: getCookie("token"),
+        },
       })
-      .catch((e) => {
-        loading(false);
-        toast.error("Something Went Wrong!");
-      });
+        .then((res) => {
+          // console.log(res);
+          if (res.data.status == 100) {
+            toast.warn(res.data.message);
+          } else {
+            setData(defaultDataConfig);
+            if (!stayHere) {
+              toast.info("Redirecting");
+              setTimeout(() => {
+                // window.location.href = "/app/IR35-Items";
+                history.back();
+              }, 1500);
+            }
+            toast.success(res.data.message);
+          }
+          loading(false);
+        })
+        .catch((e) => {
+          loading(false);
+          toast.error("Something Went Wrong!");
+        });
     }
   };
 
@@ -307,7 +318,7 @@ function AddIR35ItemForm() {
                     </Grid>
                     <Grid md={6} sm={6} xs={12} item>
                       <div>
-                      <FormControl variant="standard" style={styles().field}>
+                        <FormControl variant="standard" style={styles().field}>
                           <InputLabel>Type</InputLabel>
                           <Select
                             value={data.type}
@@ -317,40 +328,34 @@ function AddIR35ItemForm() {
                             <MenuItem value="">
                               <em>None</em>
                             </MenuItem>
-                            <MenuItem value="featured">
-                              Featured
-                            </MenuItem>
-                            <MenuItem value="noteable">
-                              Noteable
-                            </MenuItem>
-                            <MenuItem value="trending">
-                              Trending
-                            </MenuItem>
+                            <MenuItem value="featured">Featured</MenuItem>
+                            <MenuItem value="noteable">Noteable</MenuItem>
+                            <MenuItem value="trending">Trending</MenuItem>
                           </Select>
                         </FormControl>
                       </div>
                     </Grid>
                     <Grid md={12} sm={12} xs={12} item>
-                    <div>
-                      <UploadInputImg
-                        onUpload={handleUpload("image")}
-                        text="Drag and drop Image here"
-                        files={data.image && [data.image]}
-                        showPreviews={false}
-                      style={{ width: "100%" }}
-                      />
-                    </div>
+                      <div>
+                        <UploadInputImg
+                          onUpload={handleUpload("image")}
+                          text="Drag and drop Image here"
+                          files={data.image && [data.image]}
+                          showPreviews={false}
+                          style={{ width: "100%" }}
+                        />
+                      </div>
                     </Grid>
                     <Grid md={12} sm={12} xs={12} item>
-                    <div>
-                      <UploadInputImg
-                        onUpload={handleUpload("banner")}
-                        text="Drag and drop Banner here"
-                        files={data.banner && [data.banner]}
-                        showPreviews={false}
-                      style={{ width: "100%" }}
-                      />
-                    </div>
+                      <div>
+                        <UploadInputImg
+                          onUpload={handleUpload("banner")}
+                          text="Drag and drop Banner here"
+                          files={data.banner && [data.banner]}
+                          showPreviews={false}
+                          style={{ width: "100%" }}
+                        />
+                      </div>
                     </Grid>
                   </Grid>
                   <div>

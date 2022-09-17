@@ -317,6 +317,7 @@ function EditTimesheet(props) {
       data: data,
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: getCookie("token"),
       },
     })
       .then((res) => {

@@ -121,7 +121,7 @@ function AllHotDrops(props) {
           return (
             <Avatar
               alt={"image"}
-              src={STORAGEURL + (value)}
+              src={STORAGEURL + value}
               className={props.classes.avatar}
             />
           );
@@ -186,7 +186,7 @@ function AllHotDrops(props) {
     if (dataIDs.length == 1) {
       setCookie("editDataId", dataIDs[0]);
       // window.location.href = "edit-driver";
-      history.push("add-hot-drops");
+      history.push({ pathname: "add-hot-drops", state: true });
     } else {
       setDialog({
         open: true,
@@ -271,16 +271,18 @@ function AllHotDrops(props) {
 
   // main methods
   function getData(l) {
-
     axios({
       method: "POST",
-      url: URL + 'hotdrops/get',
+      url: URL + "hotdrops/get",
+      headers: {
+        Authorization: getCookie("token"),
+      },
       //   timeout: 200000,
     })
       .then((res) => {
         // console.log(res.data);
         if (res.data.status == 200) {
-          let items= [];
+          let items = [];
           for (let i = 0; i < res.data.hotdrops.length; i++) {
             let item = [];
             item.push(res.data.hotdrops[i].id);
@@ -323,6 +325,7 @@ function AllHotDrops(props) {
       }),
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: getCookie("token"),
       },
     })
       .then((res) => {
@@ -346,6 +349,9 @@ function AllHotDrops(props) {
       url: URL + "hotdrops",
       data: {
         ids: dataIDs.join(","),
+      },
+      headers: {
+        Authorization: getCookie("token"),
       },
     })
       .then((res) => {
@@ -519,7 +525,7 @@ function AllHotDrops(props) {
 
       <SpeedDial
         onEdit={() => onEdit()}
-        noStatusButton = {true}
+        noStatusButton={true}
         onRemove={() => onRemove()}
         hidden={dataIDs.length}
         menuPrefix="driver"

@@ -274,6 +274,9 @@ function AllAnalytics(props) {
     axios({
       method: "POST",
       url: URL + "analytics/get",
+      headers: {
+        Authorization: getCookie("token"),
+      },
       //   timeout: 200000,
     })
       .then((res) => {
@@ -321,6 +324,7 @@ function AllAnalytics(props) {
       }),
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: getCookie("token"),
       },
     })
       .then((res) => {
@@ -348,6 +352,7 @@ function AllAnalytics(props) {
       }),
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: getCookie("token"),
       },
     })
       .then((res) => {

@@ -158,6 +158,7 @@ function AddIR35ItemForm() {
       data: formdata,
       headers: {
         "Content-Type": "multipart/form-data",
+        Authorization: getCookie("token"),
       },
     })
       .then((res) => {
@@ -187,6 +188,9 @@ function AddIR35ItemForm() {
       method: "POST",
       url: URL + "users/getUser",
       data: {id : getCookie("editDataId")},
+      headers: {
+        Authorization: getCookie("token"),
+      },
     })
       .then((res) => {
         // console.log(res);
