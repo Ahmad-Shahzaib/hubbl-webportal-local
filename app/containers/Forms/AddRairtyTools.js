@@ -28,7 +28,7 @@ import MomentUtils from "@date-io/moment";
 import moment from "moment";
 import UploadInputImg from "./demos/UploadInputImg";
 import FormData from "form-data";
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 const styles = (theme) => ({
   root: {
     flexGrow: 1,
@@ -75,6 +75,7 @@ function AddIR35ItemForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [stayHere, setStayHere] = useState(true);
   const pathLocation = useLocation();
+  let history = useHistory();
   console.log(data);
   const handleChangeDate = (name) => (event) => {
     if (event) {
@@ -93,23 +94,16 @@ function AddIR35ItemForm() {
     }));
   };
 
-  const onEdit = () => {
+  useEffect(() => {
     if (getCookie("id")) {
       if (getCookie("editDataId")) {
+        console.log(getCookie("editDataId"));
         getData();
       }
     } else {
       window.location.href = "/login";
     }
-    if (pathLocation.state === false) {
-      removeCookie("editDataId");
-    }
-  };
-
-  useEffect(() => {
-    if (pathLocation.state) {
-      onEdit();
-    }
+    return () => removeCookie("editDataId");
   }, []);
 
   function loading(status) {
@@ -191,13 +185,18 @@ function AddIR35ItemForm() {
             toast.success(res.data.message);
             removeCookie("editDataId");
             setData(defaultDataConfig);
-          } else {
-            setData(defaultDataConfig);
-            if (!stayHere) {
+            if (stayHere === false) {
               toast.info("Redirecting");
               setTimeout(() => {
-                // window.location.href = "/app/IR35-Items";
-                history.back();
+                history.push("rairty-tools");
+              }, 1500);
+            }
+          } else {
+            setData(defaultDataConfig);
+            if (stayHere === false) {
+              toast.info("Redirecting");
+              setTimeout(() => {
+                history.push("rairty-tools");
               }, 1500);
             }
             toast.success(res.data.message);
@@ -224,11 +223,10 @@ function AddIR35ItemForm() {
             toast.warn(res.data.message);
           } else {
             setData(defaultDataConfig);
-            if (!stayHere) {
+            if (stayHere === false) {
               toast.info("Redirecting");
               setTimeout(() => {
-                // window.location.href = "/app/IR35-Items";
-                history.back();
+                history.push("rairty-tools");
               }, 1500);
             }
             toast.success(res.data.message);
@@ -342,6 +340,7 @@ function AddIR35ItemForm() {
                           showPreviews={false}
                           style={{ width: "100%" }}
                         />
+                        {console.log(data.image)}
                       </div>
                     </Grid>
                   </Grid>
@@ -362,7 +361,7 @@ function AddIR35ItemForm() {
                       control={
                         <Switch
                           value="checkedD"
-                          checked={stayHere ? true : false}
+                          checked={stayHere}
                           onChange={() => setStayHere(!stayHere)}
                           color="primary"
                         />

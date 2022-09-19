@@ -28,7 +28,7 @@ import MomentUtils from "@date-io/moment";
 import moment from "moment";
 import UploadInputImg from "./demos/UploadInputImg";
 import FormData from "form-data";
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 
 const styles = (theme) => ({
   root: {
@@ -61,6 +61,7 @@ const styles = (theme) => ({
 
 function AddIR35ItemForm() {
   const pathLocation = useLocation();
+  let history = useHistory();
   const [form, setForm] = useState({
     categories: [],
     item_fields: [],
@@ -95,23 +96,16 @@ function AddIR35ItemForm() {
     }));
   };
 
-  const onEdit = () => {
+  useEffect(() => {
     if (getCookie("id")) {
       if (getCookie("editDataId")) {
+        console.log(getCookie("editDataId"));
         getData();
       }
     } else {
       window.location.href = "/login";
     }
-    if (pathLocation.state === false) {
-      removeCookie("editDataId");
-    }
-  };
-
-  useEffect(() => {
-    if (pathLocation.state) {
-      onEdit();
-    }
+    return () => removeCookie("editDataId");
   }, []);
 
   function loading(status) {
@@ -192,13 +186,18 @@ function AddIR35ItemForm() {
             toast.success(res.data.message);
             removeCookie("editDataId");
             setData(defaultDataConfig);
-          } else {
-            setData(defaultDataConfig);
-            if (!stayHere) {
+            if (stayHere === false) {
               toast.info("Redirecting");
               setTimeout(() => {
-                // window.location.href = "/app/IR35-Items";
-                history.back();
+                history.push("nft-official-projects");
+              }, 1500);
+            }
+          } else {
+            setData(defaultDataConfig);
+            if (stayHere === false) {
+              toast.info("Redirecting");
+              setTimeout(() => {
+                history.push("nft-official-projects");
               }, 1500);
             }
             toast.success(res.data.message);
@@ -225,11 +224,10 @@ function AddIR35ItemForm() {
             toast.warn(res.data.message);
           } else {
             setData(defaultDataConfig);
-            if (!stayHere) {
+            if (stayHere === false) {
               toast.info("Redirecting");
               setTimeout(() => {
-                // window.location.href = "/app/IR35-Items";
-                history.back();
+                history.push("nft-official-projects");
               }, 1500);
             }
             toast.success(res.data.message);
@@ -375,7 +373,7 @@ function AddIR35ItemForm() {
                       control={
                         <Switch
                           value="checkedD"
-                          checked={stayHere ? true : false}
+                          checked={stayHere}
                           onChange={() => setStayHere(!stayHere)}
                           color="primary"
                         />
