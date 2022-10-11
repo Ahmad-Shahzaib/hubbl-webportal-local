@@ -76,7 +76,7 @@ function AddIR35ItemForm() {
   const [stayHere, setStayHere] = useState(true);
   const pathLocation = useLocation();
   let history = useHistory();
-  console.log(data);
+  // console.log(data);
   const handleChangeDate = (name) => (event) => {
     if (event) {
       setData({
@@ -97,7 +97,7 @@ function AddIR35ItemForm() {
   useEffect(() => {
     if (getCookie("id")) {
       if (getCookie("editDataId")) {
-        console.log(getCookie("editDataId"));
+        // console.log(getCookie("editDataId"));
         getData();
       }
     } else {
@@ -146,7 +146,7 @@ function AddIR35ItemForm() {
         if (res.data.status == 100) {
           toast.warn(res.data.message);
         } else {
-          console.log(res.data);
+          // console.log(res.data);
           setData(res.data.raritytool);
         }
         loading(false);
@@ -165,10 +165,12 @@ function AddIR35ItemForm() {
       return;
     }
     const formdata = new FormData();
-
+    console.log("+++++++",data)
     for (const property in data) {
       formdata.append(property, data[property]);
     }
+    console.log("rarity tools formdata ========================>",formdata)
+    console.log("local storage data------------------------->",getCookie("editDataId"))
     if (getCookie("editDataId")) {
       axios({
         method: "PUT",

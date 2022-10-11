@@ -101,7 +101,7 @@ function AddIR35ItemForm() {
   useEffect(() => {
     if (getCookie("id")) {
       if (getCookie("editDataId")) {
-        console.log(getCookie("editDataId"));
+        // console.log(getCookie("editDataId"));
         getData();
       }
     } else {
@@ -149,7 +149,7 @@ function AddIR35ItemForm() {
         if (res.data.status == 100) {
           toast.warn(res.data.message);
         } else {
-          console.log(res.data.hotdrop);
+          // console.log(res.data.hotdrop);
           setData(res.data.hotdrop);
         }
         loading(false);
@@ -171,10 +171,12 @@ function AddIR35ItemForm() {
       return;
     }
     const formdata = new FormData();
-
+    console.log("-------",data)
     for (const property in data) {
       formdata.append(property, data[property]);
     }
+    console.log("hotdrop formdata ========================>",formdata)
+    console.log("local storage data------------------------->",getCookie("editDataId"))
     if (getCookie("editDataId")) {
       setData;
       axios({

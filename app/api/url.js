@@ -3,7 +3,7 @@ import { getCookie } from "dan-api/cookie";
 import FormData from "form-data";
 
 export const URL = "https://clownfish-app-nxbnq.ondigitalocean.app/";
-export const STORAGEURL = "https://clownfish-app-nxbnq.ondigitalocean.app/";
+export const STORAGEURL = "https://hubbl.fra1.digitaloceanspaces.com/";
 export const IMAGEURL =
   "https://clownfish-app-nxbnq.ondigitalocean.app/public/images/";
 // export const URL = "https://6134-2400-adc7-913-4200-d0b4-92ac-3183-2def.in.ngrok.io/";
